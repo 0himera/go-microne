@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -14,6 +15,14 @@ type datetimeResponse struct{
 
 func CreateDatetimeHandler(dtService *domains.DatetimeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request)  {
+		requestID := RequestIDFromContext(r.Context())
+		log.Printf(
+			"new dt request method=%s path=%s request-id=%s",
+			r.Method,
+			r.URL.Path,
+			requestID,
+		)
+
 		unixSeconds := dtService.CurrentUnixSeconds()
 
 		t := time.Unix(unixSeconds, 0).UTC()
